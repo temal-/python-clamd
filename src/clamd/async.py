@@ -53,12 +53,14 @@ class ClamdAsyncNetworkSocket(object):
         May raise:
           - ConnectionError: in case of communication problem
         """
+        tx = None
         try:
             rx, tx = await self._init_socket()
             await self._send_command(tx, 'SHUTDOWN')
             # result = self._recv_response()
         finally:
-            tx.close()
+            if tx is not None:
+                tx.close()
 
     async def scan(self, file):
         return await self._file_system_scan('SCAN', file)
@@ -73,6 +75,7 @@ class ClamdAsyncNetworkSocket(object):
         """
         Send a command to the clamav server, and return the reply.
         """
+        tx = None
         try:
             rx, tx = await self._init_socket()
             await self._send_command(command)
@@ -82,7 +85,8 @@ class ClamdAsyncNetworkSocket(object):
             else:
                 return response[0]
         finally:
-            tx.close()
+            if tx is not None:
+                tx.close()
 
     async def _file_system_scan(self, command, file):
         """
@@ -98,6 +102,7 @@ class ClamdAsyncNetworkSocket(object):
         May raise:
           - ConnectionError: in case of communication problem
         """
+        tx = None
         try:
             rx, tx = await self._init_socket()
             await self._send_command(tx, command, file)
@@ -110,7 +115,8 @@ class ClamdAsyncNetworkSocket(object):
 
             return dr
         finally:
-            tx.close()
+            if tx is not None:
+                tx.close()
 
     async def instream(self, buff):
         """
@@ -125,6 +131,7 @@ class ClamdAsyncNetworkSocket(object):
           - BufferTooLongError: if the buffer size exceeds clamd limits
           - ConnectionError: in case of communication problem
         """
+        tx = None
         try:
             rx, tx = await self._init_socket()
             await self._send_command(tx, 'INSTREAM')
@@ -150,7 +157,8 @@ class ClamdAsyncNetworkSocket(object):
                 filename, reason, status = self._parse_response(result)
                 return {filename: (status, reason)}
         finally:
-            tx.close()
+            if tx is not None:
+                tx.close()
 
     async def stats(self):
         """
@@ -161,12 +169,14 @@ class ClamdAsyncNetworkSocket(object):
         May raise:
           - ConnectionError: in case of communication problem
         """
+        tx = None
         try:
             rx, tx = await self._init_socket()
             await self._send_command(tx, 'STATS')
             return await self._recv_response_multiline(rx)
         finally:
-            tx.close()
+            if tx is not None:
+                tx.close()
 
     async def _send_command(self, tx, cmd, *args):
         """
