@@ -79,7 +79,7 @@ class ClamdAsyncNetworkSocket(object):
         try:
             rx, tx = await self._init_socket()
             await self._send_command(tx, command)
-            response = await self._recv_response_multiline(rx).rsplit("ERROR", 1)
+            response = (await self._recv_response_multiline(rx)).rsplit("ERROR", 1)
             if len(response) > 1:
                 raise ResponseError(response[0])
             else:
