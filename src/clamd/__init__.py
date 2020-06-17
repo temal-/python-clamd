@@ -41,7 +41,7 @@ class ConnectionError(ClamdError):
 
 
 if sys.version_info > (3, 5):
-    from .async import ClamdAsyncNetworkSocket
+    from .asynchronous import ClamdAsyncNetworkSocket
 
 
 class ClamdNetworkSocket(object):
