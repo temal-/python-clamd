@@ -40,10 +40,15 @@ class ConnectionError(ClamdError):
     """Class for errors communication with clamd"""
 
 
+if sys.version_info > (3, 5):
+    from .asynchronous import ClamdAsyncNetworkSocket
+
+
 class ClamdNetworkSocket(object):
     """
     Class for using clamd with a network socket
     """
+
     def __init__(self, host='127.0.0.1', port=3310, timeout=None):
         """
         class initialisation
@@ -276,6 +281,7 @@ class ClamdUnixSocket(ClamdNetworkSocket):
     """
     Class for using clamd with an unix socket
     """
+
     def __init__(self, path="/var/run/clamav/clamd.ctl", timeout=None):
         """
         class initialisation
