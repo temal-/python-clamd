@@ -22,14 +22,14 @@ class ClamdAsyncNetworkSocket(object):
         self.port = port
         self.timeout = timeout
 
-    async def _init_socket(self, loop=None):
+    async def _init_socket(self):
         """
         internal use only
         """
         connection = asyncio.open_connection(self.host, self.port)
 
         try:
-            return await asyncio.wait_for(connection, self.timeout, loop=loop)
+            return await asyncio.wait_for(connection, self.timeout)
         except asyncio.TimeoutError as e:
             raise ConnectionError("Timeout connecting to {host}:{port}")
         except ConnectionRefusedError as e:
